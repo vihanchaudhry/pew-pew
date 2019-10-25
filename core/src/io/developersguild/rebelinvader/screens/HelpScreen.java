@@ -18,11 +18,11 @@ public class HelpScreen extends ScreenAdapter {
     RebelInvader game;
     OrthographicCamera guiCam;
     String[] message = {"Press 'A' to move left.", "Press 'D' to move right.", "Press 'W' to shoot.",
-            "Press 'SPACEBAR' to launch missile.", "Press 'SPACEBAR' again to detonate",
-            "Wait 10 seconds to reload missile.", "Kill enemies to win points.", "Reach the end to win!"};
+            "Press 'SPACEBAR' to launch missile.", "Press 'SPACEBAR' again to detonate", "Wait 10 seconds to reload missile.",
+            "Kill enemies to win points.", "Avoid damage (10% score penalty)", "Reach the end to win!"};
     String[] messageb = {"Tilt device left to move left.", "Tilt device right to move right.", "Tap screen to shoot.",
-            "Tap missile icon to launch missile.", "Press icon again to detonate",
-            "Wait 10 seconds to reload missile.", "Kill enemies to win points.", "Reach the end to win!"};
+            "Tap missile icon to launch missile.", "Press icon again to detonate", "Wait 10 seconds to reload missile.",
+            "Kill enemies to win points.", "Avoid damage (10% score penalty)", "Reach the end to win!"};
     float xOffset = 0;
     private GlyphLayout layout = new GlyphLayout();
 
@@ -50,6 +50,7 @@ public class HelpScreen extends ScreenAdapter {
         game.batch.end();
 
         game.batch.begin();
+        Assets.font.draw(game.batch, "Help", 320 / 2 - 15, 390);
         Application.ApplicationType appType = Gdx.app.getType();
         if (appType == Application.ApplicationType.Android || appType == Application.ApplicationType.iOS) {
             // Get width of largest string
@@ -61,7 +62,7 @@ public class HelpScreen extends ScreenAdapter {
             xOffset = 160 - xOffset / 2 + Assets.font.getSpaceWidth() / 2;
             // Draw the Strings
             for (int i = 0; i < messageb.length; i++) {
-                Assets.font.draw(game.batch, messageb[i], xOffset, 300 + (i * -10));
+                Assets.font.draw(game.batch, messageb[i], xOffset, 350 + (i * -30));
             }
 
         } else {
@@ -74,7 +75,7 @@ public class HelpScreen extends ScreenAdapter {
             xOffset = 160 - xOffset / 2 + Assets.font.getSpaceWidth() / 2;
             // Draw the Strings
             for (int i = 0; i < message.length; i++) {
-                Assets.font.draw(game.batch, message[i], xOffset, 300 + (i * -10));
+                Assets.font.draw(game.batch, message[i], xOffset, 350 + (i * -30));
             }
         }
 

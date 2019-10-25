@@ -54,8 +54,8 @@ public class GameScreen extends ScreenAdapter {
     static final int GAME_PAUSED = 1;
     static final int GAME_OVER = 2;
     static final int GAME_WON = 3;
+    private static final float GAME_OVER_COOLDOWN = 1.0f;
     static float missilex = 0;
-
     RebelInvader game;
     Level level;
     Settings settings;
@@ -65,12 +65,12 @@ public class GameScreen extends ScreenAdapter {
     OrthographicCamera guiCam;
     Vector3 touchPoint;
     Rectangle pauseBounds, missileBounds;
-
     private GlyphLayout layout;
     private int state;
     private List<Entity> deadEntities;
     private float currentTime;
     private boolean powerActivated;
+    private float gameOverTimer = 0.0f;
 
     public GameScreen(RebelInvader game) {
         this.game = game;
@@ -145,10 +145,10 @@ public class GameScreen extends ScreenAdapter {
                 updatePaused();
                 break;
             case GAME_OVER:
-                updateGameOver();
+                updateGameOver(deltaTime);
                 break;
             case GAME_WON:
-                updateGameOver();
+                updateGameOver(deltaTime);
                 break;
         }
     }
@@ -176,7 +176,7 @@ public class GameScreen extends ScreenAdapter {
         if (appType == Application.ApplicationType.Android || appType == Application.ApplicationType.iOS) {
             if (Math.abs(Gdx.input.getAccelerometerX()) > 0.8f)
                 accelX = Gdx.input.getAccelerometerX();
-            if (Gdx.input.justTouched() && !(missileBounds.contains(touchPoint.x, touchPoint.y)))
+            if (Gdx.input.isTouched() && !(missileBounds.contains(touchPoint.x, touchPoint.y)))
                 playerShoot();
             if (Gdx.input.justTouched() && (missileBounds.contains(touchPoint.x, touchPoint.y)))
                 missileShoot();
@@ -225,13 +225,14 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void updateGameOver() {
-        if (Gdx.input.justTouched()) {
+    private void updateGameOver(float deltatime) {
+        if (Gdx.input.justTouched() && gameOverTimer >= GAME_OVER_COOLDOWN) {
             resumeSystems();
             game.setScreen(new MainMenuScreen(game));
             settings.addScore(level.score);
             settings.save();
         }
+        gameOverTimer += deltatime;
     }
 
     private void playerShoot() {
@@ -245,7 +246,7 @@ public class GameScreen extends ScreenAdapter {
 //>>>>>>> 8f6a918c422b1e2fe72b73bff30446ad9c9b55bd
             else player.bulletTimer = currentTime + BulletComponent.COOLDOWN;
             engine.getSystem(PlayerSystem.class).requestBullet();
-            Assets.shot.play(0.7f);
+            Assets.shot.play(0.5f);
         }
     }
 
